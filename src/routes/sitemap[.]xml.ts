@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 // TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
+// Set SITE_URL in your host's environment (e.g. Azure App Settings:
+// SITE_URL=https://www.yourdomain.com) once the custom domain is live.
+const BASE_URL = (process.env["SITE_URL"] ?? "").replace(/\/$/, "");
 
 interface SitemapEntry {
   path: string;
@@ -16,6 +18,7 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: async () => {
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
+          { path: "/methodology", changefreq: "monthly", priority: "0.9" },
           { path: "/case-studies", changefreq: "monthly", priority: "0.8" },
           { path: "/contact", changefreq: "yearly", priority: "0.6" },
         ];
