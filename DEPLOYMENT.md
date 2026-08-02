@@ -17,6 +17,12 @@ DEPLOY_TARGET=azure bun run build
 PORT=8080 node .output/server/index.mjs
 ```
 
+> Use `DEPLOY_TARGET=azure` — **not** `NITRO_PRESET=azure`. There is no Nitro preset called
+> `azure`; the correct one is `node-server`, which `DEPLOY_TARGET=azure` selects for you.
+> (If `NITRO_PRESET=azure` is set anywhere in your shell or `.env`, remove it — the build now
+> rewrites it to `node-server`, but it's cleaner to unset it: `unset NITRO_PRESET`.)
+
+
 Open http://localhost:8080 — this is exactly what Azure will run.
 
 ---
@@ -26,8 +32,8 @@ Open http://localhost:8080 — this is exactly what Azure will run.
 1. Sign in to the [Azure Portal](https://portal.azure.com).
 2. **Create a resource → Web App**.
 3. Fill in:
-   - **Resource group**: create one, e.g. `rg-syb`
-   - **Name**: `SYBAssociates` (becomes `sybassociates.azurewebsites.net`)
+   - **Resource group**: create one, e.g. `rg-meridian`
+   - **Name**: `meridian-advisory` (becomes `meridian-advisory.azurewebsites.net`)
    - **Publish**: `Code`
    - **Runtime stack**: `Node 22 LTS`
    - **Operating System**: `Linux`
