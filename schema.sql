@@ -1,3 +1,6 @@
+-- Schema for SYB Associates — Azure Database for PostgreSQL Flexible Server
+-- Run once against a fresh database. See DEPLOYMENT.md Part 1.
+
 CREATE TABLE leads (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL CHECK (char_length(name) BETWEEN 2 AND 100),

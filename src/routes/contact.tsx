@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import { supabase } from "@/integrations/superbase/client";
+import { createServerFn } from "@tanstack/react-start";
+import { sql } from "@/lib/db.server";
 import { trackEvent } from "@/lib/analytics";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 
@@ -51,6 +52,19 @@ const leadSchema = z.object({
 type LeadForm = z.infer<typeof leadSchema>;
 type Errors = Partial<Record<keyof LeadForm, string>>;
 
+type LeadInput = LeadForm & { sourcePath: string | null; userAgent: string | null };
+
+// Server-only — stripped from the client bundle at build time.
+const submitLead = createServerFn({ method: "POST" })
+  .validator((data: LeadInput) => data)
+  .handler(async ({ data }) => {
+    await sql`
+      INSERT INTO leads (name, email, company, role, industry, interest, message, source_path, user_agent)
+      VALUES (${data.name}, ${data.email}, ${data.company}, ${data.role || null},
+              ${data.industry}, ${data.interest}, ${data.message}, ${data.sourcePath}, ${data.userAgent})
+    `;
+  });
+
 function ContactPage() {
   const [values, setValues] = useState<Record<string, string>>({
     name: "", email: "", company: "", role: "", industry: "", interest: "", message: "",
@@ -79,25 +93,22 @@ function ContactPage() {
     setErrors({});
     setServerError(null);
     setPending(true);
-    const { error: dbError } = await supabase.from("leads").insert({
-      name: parsed.data.name,
-      email: parsed.data.email,
-      company: parsed.data.company,
-      role: parsed.data.role || null,
-      industry: parsed.data.industry,
-      interest: parsed.data.interest,
-      message: parsed.data.message,
-      source_path: typeof window !== "undefined" ? window.location.pathname.slice(0, 512) : null,
-      user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 512) : null,
-    });
-    setPending(false);
-    if (dbError) {
-      console.error("[lead]", dbError);
+    try {
+      await submitLead({
+        data: {
+          ...parsed.data,
+          sourcePath: typeof window !== "undefined" ? window.location.pathname.slice(0, 512) : null,
+          userAgent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 512) : null,
+        },
+      });
+      trackEvent("lead_submitted");
+      setSubmitted(true);
+    } catch (err) {
+      console.error("[lead]", err);
       setServerError("We couldn't send your message. Please email partners@sybassociates.com.");
-      return;
+    } finally {
+      setPending(false);
     }
-    trackEvent("lead_submitted");
-    setSubmitted(true);
   }
 
   const inputCls = "w-full border border-border bg-background px-4 py-3 text-sm outline-none focus:border-[var(--navy)] transition-colors";
@@ -125,12 +136,8 @@ function ContactPage() {
               </div>
               <div>
                 <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Offices</div>
-                <div className="mt-2 font-display text-lg">India </div>  {/* · Boston · Singapore</div> */}
+                <div className="mt-2 font-display text-lg">India </div>
               </div>
-              {/* <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Media & speaking</div>
-                <div className="mt-2 text-muted-foreground">press@msyb.com</div>
-              </div> */}
             </div>
           </div>
 

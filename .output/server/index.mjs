@@ -1,6 +1,9 @@
 globalThis.__nitro_main__ = import.meta.url;
-import { a as FastResponse, n as HTTPError, r as defineLazyEventHandler, t as H3Core } from "./_libs/h3+rou3+srvx.mjs";
-import { t as HookableCore } from "./_libs/hookable.mjs";
+import { a as toEventHandler, c as NodeResponse, i as defineLazyEventHandler, l as serve, n as HTTPError, r as defineHandler, t as H3Core } from "./_libs/h3+rou3+srvx.mjs";
+import { i as withoutTrailingSlash, n as joinURL, r as withLeadingSlash, t as decodePath } from "./_libs/ufo.mjs";
+import { promises } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 //#region #nitro-vite-setup
 function lazyService(loader) {
 	let promise, mod;
@@ -10,8 +13,13 @@ function lazyService(loader) {
 		return promise.then((mod) => mod.fetch(req));
 	} };
 }
-var services = { ["ssr"]: lazyService(() => import("./_ssr/ssr.mjs")) };
+var services = { ["ssr"]: lazyService(() => import("./_ssr/ssr.mjs").then((n) => n.c)) };
 globalThis.__nitro_vite_envs__ = services;
+//#endregion
+//#region node_modules/nitro/dist/runtime/internal/route-rules.mjs
+var headers = ((m) => function headersRouteRule(event) {
+	for (const [key, value] of Object.entries(m.options || {})) event.res.headers.set(key, value);
+});
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
@@ -25,88 +33,94 @@ var public_assets_data_default = {
 	"/robots.txt": {
 		"type": "text/plain; charset=utf-8",
 		"etag": "\"16-iUOtJ2RsHfdY9DoQxaq0wz1LZCU\"",
-		"mtime": "2026-08-01T16:51:32.706Z",
+		"mtime": "2026-08-16T14:55:24.855Z",
 		"size": 22,
 		"path": "../public/robots.txt"
 	},
-	"/assets/SiteChrome-bm0p5zhY.js": {
+	"/assets/SiteChrome-DwvctlSn.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"1682-3VzN9qKdvmD0hzs8qp+XKqSgJ4Q\"",
-		"mtime": "2026-08-01T16:51:32.375Z",
-		"size": 5762,
-		"path": "../public/assets/SiteChrome-bm0p5zhY.js"
+		"etag": "\"169a-HJnT3eSjFwnFxstyzfTpcFfAlv8\"",
+		"mtime": "2026-08-16T14:55:24.585Z",
+		"size": 5786,
+		"path": "../public/assets/SiteChrome-DwvctlSn.js"
 	},
-	"/assets/case-studies-D_zbJnF8.js": {
+	"/assets/case-studies-iOasQiOT.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"15fc-KK8xtvzlsJzUp0Qqc8aJ1Gakmng\"",
-		"mtime": "2026-08-01T16:51:32.375Z",
+		"etag": "\"15fc-KdbJ5I8vUjWhJFUho7JRrv/0Xf8\"",
+		"mtime": "2026-08-16T14:55:24.585Z",
 		"size": 5628,
-		"path": "../public/assets/case-studies-D_zbJnF8.js"
+		"path": "../public/assets/case-studies-iOasQiOT.js"
 	},
-	"/assets/contact-CKTaHDJm.js": {
+	"/assets/contact-BMMmTB-J.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"1c02-EnbLpEv1q/HGhOoofFjatllsCK0\"",
-		"mtime": "2026-08-01T16:51:32.375Z",
-		"size": 7170,
-		"path": "../public/assets/contact-CKTaHDJm.js"
+		"etag": "\"1bbe-IuO5aMpe89MIvpl0wdKAwPC30t4\"",
+		"mtime": "2026-08-16T14:55:24.585Z",
+		"size": 7102,
+		"path": "../public/assets/contact-BMMmTB-J.js"
 	},
 	"/assets/hero-supply-chain-CovBnjhB.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"2d699-3uBWq6G/W4/6yaK7+DrN1jqy/88\"",
-		"mtime": "2026-08-01T16:51:32.376Z",
+		"mtime": "2026-08-16T14:55:24.588Z",
 		"size": 186009,
 		"path": "../public/assets/hero-supply-chain-CovBnjhB.jpg"
 	},
-	"/assets/consultingMethodology-BdSaWnPd.js": {
+	"/assets/consultingMethodology-CjyrrlFQ.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"2121-zhkNP81lmRuOUiUhpuWH+D/wsJ0\"",
-		"mtime": "2026-08-01T16:51:32.375Z",
+		"etag": "\"2121-dl9OpaeTr7ZqGjG5lP8yXPpB/BU\"",
+		"mtime": "2026-08-16T14:55:24.585Z",
 		"size": 8481,
-		"path": "../public/assets/consultingMethodology-BdSaWnPd.js"
-	},
-	"/assets/styles-Dit3D9yT.css": {
-		"type": "text/css; charset=utf-8",
-		"etag": "\"138eb-ahw0iqg4c3AwiMg0ZfxhC+LaZw8\"",
-		"mtime": "2026-08-01T16:51:32.376Z",
-		"size": 80107,
-		"path": "../public/assets/styles-Dit3D9yT.css"
+		"path": "../public/assets/consultingMethodology-CjyrrlFQ.js"
 	},
 	"/assets/digital-network-BMNnv5_N.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"25596-z8KFsOWStgV2pGME3SP51iDzL+A\"",
-		"mtime": "2026-08-01T16:51:32.376Z",
+		"mtime": "2026-08-16T14:55:24.587Z",
 		"size": 152982,
 		"path": "../public/assets/digital-network-BMNnv5_N.jpg"
 	},
-	"/assets/routes-5Sq2Y8bE.js": {
+	"/assets/index-DJoYk8Wl.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"2682-86mZ2lPu6xm69/6h7w7ehS/Rx5g\"",
-		"mtime": "2026-08-01T16:51:32.375Z",
-		"size": 9858,
-		"path": "../public/assets/routes-5Sq2Y8bE.js"
+		"etag": "\"65449-FNayn3Z/9kyRsJqpXLypKfius00\"",
+		"mtime": "2026-08-16T14:55:24.584Z",
+		"size": 414793,
+		"path": "../public/assets/index-DJoYk8Wl.js"
 	},
 	"/assets/Light BG Main Trans-D6hnLLvf.png": {
 		"type": "image/png",
 		"etag": "\"c293a-g4OoXoKGcBSgImTMEsqlhbjuajA\"",
-		"mtime": "2026-08-01T16:51:32.376Z",
+		"mtime": "2026-08-16T14:55:24.586Z",
 		"size": 796986,
 		"path": "../public/assets/Light BG Main Trans-D6hnLLvf.png"
 	},
-	"/assets/index-Dq2t1NKv.js": {
+	"/assets/routes-CsvPF1AF.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"9608f-Z57CfL3E+47jLZuKnzqzKfoQ6Cs\"",
-		"mtime": "2026-08-01T16:51:32.374Z",
-		"size": 614543,
-		"path": "../public/assets/index-Dq2t1NKv.js"
+		"etag": "\"2682-YqWYFHdWTYGWN5ueHJcq38uXuYU\"",
+		"mtime": "2026-08-16T14:55:24.586Z",
+		"size": 9858,
+		"path": "../public/assets/routes-CsvPF1AF.js"
+	},
+	"/assets/styles-C4JHCCbw.css": {
+		"type": "text/css; charset=utf-8",
+		"etag": "\"13da0-iDT2wEyfXgWtiD09eTQw4FSYGds\"",
+		"mtime": "2026-08-16T14:55:24.589Z",
+		"size": 81312,
+		"path": "../public/assets/styles-C4JHCCbw.css"
 	},
 	"/assets/Mini Light BG-DDl13UH3.png": {
 		"type": "image/png",
 		"etag": "\"115a40-BqLYQDttL9ya0cTebuA3bqJjZw0\"",
-		"mtime": "2026-08-01T16:51:32.376Z",
+		"mtime": "2026-08-16T14:55:24.586Z",
 		"size": 1137216,
 		"path": "../public/assets/Mini Light BG-DDl13UH3.png"
 	}
 };
+//#endregion
+//#region #nitro/virtual/public-assets-node
+function readAsset(id) {
+	const serverDir = dirname(fileURLToPath(globalThis.__nitro_main__));
+	return promises.readFile(resolve(serverDir, public_assets_data_default[id].path));
+}
 //#endregion
 //#region #nitro/virtual/public-assets
 var publicAssetBases = {};
@@ -115,10 +129,56 @@ function isPublicAssetURL(id = "") {
 	for (const base in publicAssetBases) if (id.startsWith(base)) return true;
 	return false;
 }
+function getAsset(id) {
+	return public_assets_data_default[id];
+}
 //#endregion
-//#region node_modules/nitro/dist/runtime/internal/route-rules.mjs
-var headers = ((m) => function headersRouteRule(event) {
-	for (const [key, value] of Object.entries(m.options || {})) event.res.headers.set(key, value);
+//#region node_modules/nitro/dist/runtime/internal/static.mjs
+var METHODS = new Set(["HEAD", "GET"]);
+var EncodingMap = {
+	gzip: ".gz",
+	br: ".br",
+	zstd: ".zst"
+};
+var static_default = defineHandler((event) => {
+	if (event.req.method && !METHODS.has(event.req.method)) return;
+	let id = decodePath(withLeadingSlash(withoutTrailingSlash(event.url.pathname)));
+	let asset;
+	const encodings = [...(event.req.headers.get("accept-encoding") || "").split(",").map((e) => EncodingMap[e.trim()]).filter(Boolean).sort(), ""];
+	for (const encoding of encodings) for (const _id of [id + encoding, joinURL(id, "index.html" + encoding)]) {
+		const _asset = getAsset(_id);
+		if (_asset) {
+			asset = _asset;
+			id = _id;
+			break;
+		}
+	}
+	if (!asset) {
+		if (isPublicAssetURL(id)) {
+			event.res.headers.delete("Cache-Control");
+			throw new HTTPError({ status: 404 });
+		}
+		return;
+	}
+	if (encodings.length > 1) event.res.headers.append("Vary", "Accept-Encoding");
+	if (event.req.headers.get("if-none-match") === asset.etag) {
+		event.res.status = 304;
+		event.res.statusText = "Not Modified";
+		return "";
+	}
+	const ifModifiedSinceH = event.req.headers.get("if-modified-since");
+	const mtimeDate = new Date(asset.mtime);
+	if (ifModifiedSinceH && asset.mtime && new Date(ifModifiedSinceH) >= mtimeDate) {
+		event.res.status = 304;
+		event.res.statusText = "Not Modified";
+		return "";
+	}
+	if (asset.type) event.res.headers.set("Content-Type", asset.type);
+	if (asset.etag && !event.res.headers.has("ETag")) event.res.headers.set("ETag", asset.etag);
+	if (asset.mtime && !event.res.headers.has("Last-Modified")) event.res.headers.set("Last-Modified", mtimeDate.toUTCString());
+	if (asset.encoding && !event.res.headers.has("Content-Encoding")) event.res.headers.set("Content-Encoding", asset.encoding);
+	if (asset.size > 0 && !event.res.headers.has("Content-Length")) event.res.headers.set("Content-Length", asset.size.toString());
+	return readAsset(id);
 });
 //#endregion
 //#region #nitro/virtual/routing
@@ -155,12 +215,12 @@ var findRoute = /* @__PURE__ */ (() => {
 		};
 	});
 })();
-[].filter(Boolean);
+var globalMiddleware = [toEventHandler(static_default)].filter(Boolean);
 //#endregion
 //#region node_modules/nitro/dist/runtime/internal/error/prod.mjs
 var errorHandler = (error, event) => {
 	const res = defaultHandler(error, event);
-	return new FastResponse(typeof res.body === "string" ? res.body : JSON.stringify(res.body, null, 2), res);
+	return new NodeResponse(typeof res.body === "string" ? res.body : JSON.stringify(res.body, null, 2), res);
 };
 function defaultHandler(error, event) {
 	const unhandled = error.unhandled ?? !HTTPError.isError(error);
@@ -233,6 +293,7 @@ function createNitroApp() {
 function createH3App(config) {
 	const h3App = new H3Core(config);
 	h3App["~findRoute"] = (event) => findRoute(event.req.method, event.url.pathname);
+	h3App["~middleware"].push(...globalMiddleware);
 	h3App["~getMiddleware"] = (event, route) => {
 		const pathname = event.url.pathname;
 		const method = event.req.method;
@@ -240,6 +301,7 @@ function createH3App(config) {
 		const routeRules = getRouteRules(method, pathname);
 		event.context.routeRules = routeRules?.routeRules;
 		if (routeRules?.routeRuleMiddleware.length) middleware.push(...routeRules.routeRuleMiddleware);
+		middleware.push(...h3App["~middleware"]);
 		if (route?.data?.middleware?.length) middleware.push(...route.data.middleware);
 		return middleware;
 	};
@@ -255,12 +317,6 @@ function useNitroApp() {
 	globalThis.__nitro__ = globalThis.__nitro__ || {};
 	globalThis.__nitro__[APP_ID] = instance;
 	return instance;
-}
-function useNitroHooks() {
-	const nitroApp = useNitroApp();
-	const hooks = nitroApp.hooks;
-	if (hooks) return hooks;
-	return nitroApp.hooks = new HookableCore();
 }
 function getRouteRules(method, pathname) {
 	const m = findRouteRules(method, pathname);
@@ -300,83 +356,37 @@ function getRouteRules(method, pathname) {
 	};
 }
 //#endregion
-//#region node_modules/nitro/dist/presets/cloudflare/runtime/_module-handler.mjs
-function createHandler(hooks) {
-	const nitroApp = useNitroApp();
-	const nitroHooks = useNitroHooks();
-	return {
-		async fetch(request, env, context) {
-			globalThis.__env__ = env;
-			augmentReq(request, {
-				env,
-				context
-			});
-			const ctxExt = {};
-			const url = new URL(request.url);
-			if (hooks.fetch) {
-				const res = await hooks.fetch(request, env, context, url, ctxExt);
-				if (res) return res;
-			}
-			return await nitroApp.fetch(request);
-		},
-		scheduled(controller, env, context) {
-			globalThis.__env__ = env;
-			context.waitUntil(nitroHooks.callHook("cloudflare:scheduled", {
-				controller,
-				env,
-				context
-			}) || Promise.resolve());
-		},
-		email(message, env, context) {
-			globalThis.__env__ = env;
-			context.waitUntil(nitroHooks.callHook("cloudflare:email", {
-				message,
-				event: message,
-				env,
-				context
-			}) || Promise.resolve());
-		},
-		queue(batch, env, context) {
-			globalThis.__env__ = env;
-			context.waitUntil(nitroHooks.callHook("cloudflare:queue", {
-				batch,
-				event: batch,
-				env,
-				context
-			}) || Promise.resolve());
-		},
-		tail(traces, env, context) {
-			globalThis.__env__ = env;
-			context.waitUntil(nitroHooks.callHook("cloudflare:tail", {
-				traces,
-				env,
-				context
-			}) || Promise.resolve());
-		},
-		trace(traces, env, context) {
-			globalThis.__env__ = env;
-			context.waitUntil(nitroHooks.callHook("cloudflare:trace", {
-				traces,
-				env,
-				context
-			}) || Promise.resolve());
-		}
-	};
+//#region node_modules/nitro/dist/runtime/internal/error/hooks.mjs
+function _captureError(error, type) {
+	console.error(`[${type}]`, error);
+	useNitroApp().captureError?.(error, { tags: [type] });
 }
-function augmentReq(cfReq, ctx) {
-	const req = cfReq;
-	req.ip = cfReq.headers.get("cf-connecting-ip") || void 0;
-	req.runtime ??= { name: "cloudflare" };
-	req.runtime.cloudflare = {
-		...req.runtime.cloudflare,
-		...ctx
-	};
-	req.waitUntil = ctx.context?.waitUntil.bind(ctx.context);
+function trapUnhandledErrors() {
+	process.on("unhandledRejection", (error) => _captureError(error, "unhandledRejection"));
+	process.on("uncaughtException", (error) => _captureError(error, "uncaughtException"));
 }
 //#endregion
-//#region node_modules/nitro/dist/presets/cloudflare/runtime/cloudflare-module.mjs
-var cloudflare_module_default = createHandler({ fetch(cfRequest, env, context, url) {
-	if (env.ASSETS && isPublicAssetURL(url.pathname)) return env.ASSETS.fetch(cfRequest);
-} });
+//#region #nitro/virtual/tracing
+var tracingSrvxPlugins = [];
 //#endregion
-export { cloudflare_module_default as default };
+//#region node_modules/nitro/dist/presets/node/runtime/node-server.mjs
+var _parsedPort = Number.parseInt(process.env.NITRO_PORT ?? process.env.PORT ?? "");
+var port = Number.isNaN(_parsedPort) ? 3e3 : _parsedPort;
+var host = process.env.NITRO_HOST || process.env.HOST;
+var cert = process.env.NITRO_SSL_CERT;
+var key = process.env.NITRO_SSL_KEY;
+var nitroApp = useNitroApp();
+serve({
+	port,
+	hostname: host,
+	tls: cert && key ? {
+		cert,
+		key
+	} : void 0,
+	fetch: nitroApp.fetch,
+	plugins: [...tracingSrvxPlugins]
+});
+trapUnhandledErrors();
+var node_server_default = {};
+//#endregion
+export { node_server_default as default };

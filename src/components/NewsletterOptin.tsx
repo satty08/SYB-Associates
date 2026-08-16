@@ -1,9 +1,38 @@
 import { useState } from "react";
 import { z } from "zod";
-import { supabase } from "../integrations/superbase/client";
+import { createServerFn } from "@tanstack/react-start";
+import { sql } from "@/lib/db.server";
 import { trackEvent } from "@/lib/analytics";
 
 const emailSchema = z.string().trim().email("Enter a valid email").max(255);
+
+type SubscribeInput = {
+  email: string;
+  sourcePath: string | null;
+  userAgent: string | null;
+};
+
+// Runs server-side only — TanStack Start strips this handler (and its
+// db.server.ts import) out of the client bundle at build time and replaces
+// the call site below with an RPC request.
+const subscribeNewsletter = createServerFn({ method: "POST" })
+  .validator((data: SubscribeInput) => data)
+  .handler(async ({ data }) => {
+    try {
+      await sql`
+        INSERT INTO newsletter_subscribers (email, source_path, user_agent)
+        VALUES (${data.email}, ${data.sourcePath}, ${data.userAgent})
+      `;
+      return { alreadySubscribed: false };
+    } catch (err: any) {
+      // Unique-violation → already subscribed; treat as success.
+      if (err?.code === "23505") {
+        return { alreadySubscribed: true };
+      }
+      console.error("[newsletter]", err);
+      throw err;
+    }
+  });
 
 export function NewsletterOptIn({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [email, setEmail] = useState("");
@@ -19,26 +48,21 @@ export function NewsletterOptIn({ variant = "light" }: { variant?: "light" | "da
     }
     setError(null);
     setState("loading");
-    const { error: dbError } = await supabase
-      .from("newsletter_subscribers")
-      .insert({
-        email: parsed.data,
-        source_path: typeof window !== "undefined" ? window.location.pathname.slice(0, 512) : null,
-        user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 512) : null,
+    try {
+      await subscribeNewsletter({
+        data: {
+          email: parsed.data,
+          sourcePath: typeof window !== "undefined" ? window.location.pathname.slice(0, 512) : null,
+          userAgent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 512) : null,
+        },
       });
-    if (dbError) {
-      // Unique-violation → already subscribed; treat as success.
-      if (dbError.code === "23505") {
-        setState("done");
-        return;
-      }
-      console.error("[newsletter]", dbError);
+      trackEvent("newsletter_signup");
+      setState("done");
+    } catch (err) {
+      console.error("[newsletter]", err);
       setError("Something went wrong. Please try again.");
       setState("error");
-      return;
     }
-    trackEvent("newsletter_signup");
-    setState("done");
   }
 
   const dark = variant === "dark";
