@@ -2,40 +2,41 @@ name: Deploy to Azure Web App
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
+  workflow_dispatch: {}
 
 env:
-  AZURE_WEBAPP_NAME: meridian-advisory # must match your Azure Web App name
-  NODE_VERSION: "22.x"
+  AZURE_WEBAPP_NAME: syb-associates
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - run: bun install --frozen-lockfile
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-      - name: Build (Node server output)
+      - name: Build
+        run: bun run build
         env:
           DEPLOY_TARGET: azure
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
-        run: bun run build
 
-      - name: Package server output
+      - name: Zip build output
         run: |
-          mkdir -p deploy
-          cp -r .output deploy/.output
-          cd deploy && zip -r ../app.zip . > /dev/null
+          cd .output
+          zip -r ../app.zip .
+          cd ..
 
-      - uses: azure/webapps-deploy@v3
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
