@@ -105,7 +105,7 @@ function ContactPage() {
       setSubmitted(true);
     } catch (err) {
       console.error("[lead]", err);
-      setServerError("We couldn't send your message. Please email partners@sybassociates.com.");
+      setServerError("We couldn't send your message. Please email partners@sybassociates.in.");
     } finally {
       setPending(false);
     }
@@ -130,8 +130,8 @@ function ContactPage() {
             <div className="mt-12 space-y-8 border-l border-[var(--navy)] pl-8">
               <div>
                 <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Direct email</div>
-                <a href="mailto:partners@sybassociates.com" className="mt-2 block font-display text-xl hover:text-[var(--navy)]">
-                  partners@sybassociates.com
+                <a href="mailto:partners@sybassociates.in" className="mt-2 block font-display text-xl hover:text-[var(--navy)]">
+                  partners@sybassociates.in
                 </a>
               </div>
               <div>
