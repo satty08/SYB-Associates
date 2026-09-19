@@ -119,7 +119,7 @@ function Methodology() {
             ))}
           </div>
           {/* Downloads */}
-          <div className="mt-12">
+          {/* <div className="mt-12">
             <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">Downloadable Resources</div>
             <div className="flex flex-wrap gap-3">
               {downloads.map((d) => (
@@ -133,7 +133,7 @@ function Methodology() {
                 </a>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
       {/* Phases */}
