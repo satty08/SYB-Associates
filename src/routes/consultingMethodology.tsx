@@ -8,7 +8,7 @@ export const Route = createFileRoute("/consultingMethodology")({
       { property: "og:title", content: "Our Consulting Methodology — OITF" },
       { property: "og:description", content: "A structured, data-driven approach: Discovery, Diagnostic, Assessment, Roadmap, Implementation, Measurement, Continuous Improvement." },
     ],
-    links: [{ rel: "canonical", href: "/methodology" }],
+    links: [{ rel: "canonical", href: "/consultingMethodology" }],
   }),
   component: Methodology,
 });

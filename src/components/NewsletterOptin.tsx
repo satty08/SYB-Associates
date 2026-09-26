@@ -78,19 +78,19 @@ export function NewsletterOptIn({ variant = "light" }: { variant?: "light" | "da
     return (
       <div className={`text-sm ${dark ? "text-white" : "text-foreground"}`}>
         <span className="font-display text-lg">Thanks — you're on the list.</span>
-        <div className={`mt-1 text-xs ${labelCls}`}>The next SCM Deep Dive briefing is out on the first Tuesday of the month.</div>
+        <div className={`mt-1 text-xs ${labelCls}`}>You’ll receive our next practical business perspective.</div>
       </div>
     );
   }
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-3">
-      <div className={`text-xs uppercase tracking-[0.2em] ${labelCls}`}>Monthly briefing</div>
+      <div className={`text-xs uppercase tracking-[0.2em] ${labelCls}`}>Business perspectives</div>
       <div className={`font-display text-2xl ${dark ? "text-white" : "text-foreground"}`}>
-        The SCM Deep Dive, in your inbox.
+        SYB thinking, in your inbox.
       </div>
       <p className={`text-sm ${labelCls}`}>
-        One short letter each month: what we're seeing in pharma and manufacturing supply chains, what we're reading, and what we'd do about it.
+        Concise perspectives on growth, profitability, commercial strategy, operations and analytics.
       </p>
       <div className="flex flex-col gap-2 sm:flex-row">
         <input

@@ -10,14 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as IndustriesRouteImport } from './routes/industries'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConsultingMethodologyRouteImport } from './routes/consultingMethodology'
+import { Route as ConsultingServicesRouteImport } from './routes/consulting-services'
 import { Route as CaseStudiesRouteImport } from './routes/case-studies'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IndustryIndustryRouteImport } from './routes/industry.$industry'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndustriesRoute = IndustriesRouteImport.update({
+  id: '/industries',
+  path: '/industries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -30,9 +45,19 @@ const ConsultingMethodologyRoute = ConsultingMethodologyRouteImport.update({
   path: '/consultingMethodology',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsultingServicesRoute = ConsultingServicesRouteImport.update({
+  id: '/consulting-services',
+  path: '/consulting-services',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CaseStudiesRoute = CaseStudiesRouteImport.update({
   id: '/case-studies',
   path: '/case-studies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -40,59 +65,99 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndustryIndustryRoute = IndustryIndustryRouteImport.update({
+  id: '/industry/$industry',
+  path: '/industry/$industry',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/case-studies': typeof CaseStudiesRoute
+  '/consulting-services': typeof ConsultingServicesRoute
   '/consultingMethodology': typeof ConsultingMethodologyRoute
   '/contact': typeof ContactRoute
+  '/industries': typeof IndustriesRoute
+  '/insights': typeof InsightsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/industry/$industry': typeof IndustryIndustryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/case-studies': typeof CaseStudiesRoute
+  '/consulting-services': typeof ConsultingServicesRoute
   '/consultingMethodology': typeof ConsultingMethodologyRoute
   '/contact': typeof ContactRoute
+  '/industries': typeof IndustriesRoute
+  '/insights': typeof InsightsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/industry/$industry': typeof IndustryIndustryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/case-studies': typeof CaseStudiesRoute
+  '/consulting-services': typeof ConsultingServicesRoute
   '/consultingMethodology': typeof ConsultingMethodologyRoute
   '/contact': typeof ContactRoute
+  '/industries': typeof IndustriesRoute
+  '/insights': typeof InsightsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/industry/$industry': typeof IndustryIndustryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/case-studies'
+    | '/consulting-services'
     | '/consultingMethodology'
     | '/contact'
+    | '/industries'
+    | '/insights'
     | '/sitemap.xml'
+    | '/industry/$industry'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/case-studies'
+    | '/consulting-services'
     | '/consultingMethodology'
     | '/contact'
+    | '/industries'
+    | '/insights'
     | '/sitemap.xml'
+    | '/industry/$industry'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/case-studies'
+    | '/consulting-services'
     | '/consultingMethodology'
     | '/contact'
+    | '/industries'
+    | '/insights'
     | '/sitemap.xml'
+    | '/industry/$industry'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   CaseStudiesRoute: typeof CaseStudiesRoute
+  ConsultingServicesRoute: typeof ConsultingServicesRoute
   ConsultingMethodologyRoute: typeof ConsultingMethodologyRoute
   ContactRoute: typeof ContactRoute
+  IndustriesRoute: typeof IndustriesRoute
+  InsightsRoute: typeof InsightsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  IndustryIndustryRoute: typeof IndustryIndustryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -102,6 +167,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/industries': {
+      id: '/industries'
+      path: '/industries'
+      fullPath: '/industries'
+      preLoaderRoute: typeof IndustriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -118,11 +197,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsultingMethodologyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consulting-services': {
+      id: '/consulting-services'
+      path: '/consulting-services'
+      fullPath: '/consulting-services'
+      preLoaderRoute: typeof ConsultingServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/case-studies': {
       id: '/case-studies'
       path: '/case-studies'
       fullPath: '/case-studies'
       preLoaderRoute: typeof CaseStudiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -132,15 +225,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/industry/$industry': {
+      id: '/industry/$industry'
+      path: '/industry/$industry'
+      fullPath: '/industry/$industry'
+      preLoaderRoute: typeof IndustryIndustryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   CaseStudiesRoute: CaseStudiesRoute,
+  ConsultingServicesRoute: ConsultingServicesRoute,
   ConsultingMethodologyRoute: ConsultingMethodologyRoute,
   ContactRoute: ContactRoute,
+  IndustriesRoute: IndustriesRoute,
+  InsightsRoute: InsightsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  IndustryIndustryRoute: IndustryIndustryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

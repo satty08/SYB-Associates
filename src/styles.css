@@ -80,3 +80,15 @@
   background: linear-gradient(90deg, transparent, var(--ice), transparent);
   height: 1px;
 }
+
+@utility eyebrow {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

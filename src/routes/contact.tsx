@@ -5,14 +5,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { sql } from "@/lib/db.server";
 import { trackEvent } from "@/lib/analytics";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — SYB Associates" },
-      { name: "description", content: "Talk to SYB Associates about a supply chain, digital, or analytics engagement in pharmaceutical or manufacturing. 30-minute diagnostics available." },
+      { name: "description", content: "Tell SYB Associates about a challenge across growth, profitability, revenue or operations." },
       { property: "og:title", content: "Contact — SYB Associates" },
-      { property: "og:description", content: "Book a 30-minute diagnostic with a SYB Associates partner." },
+      { property: "og:description", content: "Let's solve the problem together." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/contact" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -147,7 +148,7 @@ function ContactPage() {
                 <div className="text-center py-12">
                   <div className="font-display text-3xl md:text-4xl">Thank you, {values.name.split(" ")[0]}.</div>
                   <p className="mt-4 text-muted-foreground max-w-md mx-auto">
-                    Your note is with the {values.interest.replace("-", " ")} practice. A partner will reply within one business day.
+                    Your message has been received. We will review the context and respond shortly.
                   </p>
                   <button
                     onClick={() => { setSubmitted(false); setValues({ name: "", email: "", company: "", role: "", industry: "", interest: "", message: "" }); }}
@@ -182,19 +183,22 @@ function ContactPage() {
                     <Field label="Industry" error={errors.industry}>
                       <select className={inputCls} value={values.industry} onChange={(e) => update("industry", e.target.value)}>
                         <option value="">Select…</option>
-                        <option value="pharma">Pharmaceutical / Life Sciences</option>
-                        <option value="manufacturing">Industrial Manufacturing</option>
-                        <option value="consumer-health">Consumer Health</option>
+                        <option value="Industrials & Mobility">Industrials & Mobility</option>
+                        <option value="Healthcare & Life Sciences">Healthcare & Life Sciences</option>
+                        <option value="consumConsumer & Food">Consumer & Food</option>
+                        <option value="retail">Retail</option>
+                        <option value="technology">Technology</option>
                         <option value="other">Other</option>
                       </select>
                     </Field>
                     <Field label="Area of interest" error={errors.interest}>
                       <select className={inputCls} value={values.interest} onChange={(e) => update("interest", e.target.value)}>
                         <option value="">Select…</option>
-                        <option value="supply-chain">Supply Chain Strategy</option>
-                        <option value="digital">Digital Supply Chain</option>
-                        <option value="analytics">Advanced Analytics</option>
-                        <option value="operations">Operations Excellence</option>
+                        <option value="profitability">Profitabilityy</option>
+                        <option value="gtm">Go-to-Market</option>
+                        <option value="revenue-management">Revenue Management</option>
+                        <option value="general-business-challenge">General Business Challenge</option>
+                        <option value="supply-chain">Supply Chain</option>
                         <option value="not-sure">Not sure yet</option>
                       </select>
                     </Field>
@@ -205,7 +209,7 @@ function ContactPage() {
                   </Field>
 
                   <button type="submit" disabled={pending} className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-[var(--navy-deep)] px-8 py-3.5 text-sm text-white hover:bg-[var(--navy)] transition-colors disabled:opacity-60">
-                    {pending ? "Sending…" : "Request diagnostic →"}
+                    {pending ? "Sending…" : "Start a Conversation"}
                   </button>
                   {serverError ? <div className="text-xs text-red-500">{serverError}</div> : null}
                   <p className="text-xs text-muted-foreground">
