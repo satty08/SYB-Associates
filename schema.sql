@@ -7,8 +7,8 @@ CREATE TABLE leads (
   email text NOT NULL CHECK (char_length(email) BETWEEN 3 AND 255),
   company text NOT NULL CHECK (char_length(company) BETWEEN 2 AND 120),
   role text CHECK (role IS NULL OR char_length(role) <= 120),
-  industry text NOT NULL CHECK (industry IN ('industrials-mobility', 'healthcare-life-sciences', 'consumer-food', 'retail', 'technology', 'other')),
-  interest text NOT NULL CHECK (interest IN ('profitability', 'gtm', 'revenue-management', 'general-business-challenge', 'supply-chain', 'not-sure')),
+  industry text NOT NULL CHECK (industry IN ('pharma','manufacturing','consumer-health','other')),
+  interest text NOT NULL CHECK (interest IN ('supply-chain','digital','analytics','operations','not-sure')),
   message text NOT NULL CHECK (char_length(message) BETWEEN 10 AND 1500),
   source_path text,
   user_agent text,
@@ -34,3 +34,17 @@ CREATE TABLE page_views (
 );
 CREATE INDEX page_views_created_at_idx ON page_views (created_at DESC);
 CREATE INDEX page_views_path_idx ON page_views (path);
+
+ALTER TABLE public.leads
+  DROP CONSTRAINT leads_industry_check;
+
+ALTER TABLE public.leads
+  ADD CONSTRAINT leads_industry_check
+  CHECK (industry IN ('industrials-mobility', 'healthcare-life-sciences', 'consumer-food', 'retail', 'technology', 'other'));
+
+ALTER TABLE public.leads
+  DROP CONSTRAINT leads_interest_check;
+
+ALTER TABLE public.leads
+  ADD CONSTRAINT leads_interest_check
+  CHECK (interest IN ('profitability', 'gtm', 'revenue-management', 'general-business-challenge', 'supply-chain', 'not-sure'));
