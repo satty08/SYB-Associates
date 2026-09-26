@@ -41,7 +41,7 @@ const leadSchema = z.object({
   email: z.string().trim().email("Enter a valid work email").max(255),
   company: z.string().trim().min(2, "Company is required").max(120),
   role: z.string().trim().max(120).optional().or(z.literal("")),
-  industry: z.enum(["Industrials & Mobility", "Healthcare & Life Sciences", "Consumer & Food", "retail", "technology", "other"], {
+  industry: z.enum(["industrials-mobility", "healthcare-life-sciences", "consumer-food", "retail", "technology", "other"], {
     message: "Choose an industry",
   }),
   interest: z.enum(["profitability", "gtm", "revenue-management", "general-business-challenge", "supply-chain", "not-sure"], {
@@ -183,9 +183,9 @@ function ContactPage() {
                     <Field label="Industry" error={errors.industry}>
                       <select className={inputCls} value={values.industry} onChange={(e) => update("industry", e.target.value)}>
                         <option value="">Select…</option>
-                        <option value="Industrials & Mobility">Industrials & Mobility</option>
-                        <option value="Healthcare & Life Sciences">Healthcare & Life Sciences</option>
-                        <option value="Consumer & Food">Consumer & Food</option>
+                        <option value="industrials-mobility">Industrials & Mobility</option>
+                        <option value="healthcare-life-sciences">Healthcare & Life Sciences</option>
+                        <option value="consumer-food">Consumer & Food</option>
                         <option value="retail">Retail</option>
                         <option value="technology">Technology</option>
                         <option value="other">Other</option>
@@ -194,7 +194,7 @@ function ContactPage() {
                     <Field label="Area of interest" error={errors.interest}>
                       <select className={inputCls} value={values.interest} onChange={(e) => update("interest", e.target.value)}>
                         <option value="">Select…</option>
-                        <option value="profitability">Profitabilityy</option>
+                        <option value="profitability">Profitability</option>
                         <option value="gtm">Go-to-Market</option>
                         <option value="revenue-management">Revenue Management</option>
                         <option value="supply-chain">Supply Chain</option>
