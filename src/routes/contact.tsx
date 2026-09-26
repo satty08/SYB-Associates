@@ -41,10 +41,10 @@ const leadSchema = z.object({
   email: z.string().trim().email("Enter a valid work email").max(255),
   company: z.string().trim().min(2, "Company is required").max(120),
   role: z.string().trim().max(120).optional().or(z.literal("")),
-  industry: z.enum(["pharma", "manufacturing", "consumer-health", "other"], {
+  industry: z.enum(["Industrials & Mobility", "Healthcare & Life Sciences", "Consumer & Food", "retail", "technology", "other"], {
     message: "Choose an industry",
   }),
-  interest: z.enum(["supply-chain", "digital", "analytics", "operations", "not-sure"], {
+  interest: z.enum(["profitability", "gtm", "revenue-management", "general-business-challenge", "supply-chain", "not-sure"], {
     message: "Choose an area",
   }),
   message: z.string().trim().min(10, "Give us a sentence or two of context").max(1500),
@@ -185,7 +185,7 @@ function ContactPage() {
                         <option value="">Select…</option>
                         <option value="Industrials & Mobility">Industrials & Mobility</option>
                         <option value="Healthcare & Life Sciences">Healthcare & Life Sciences</option>
-                        <option value="consumConsumer & Food">Consumer & Food</option>
+                        <option value="Consumer & Food">Consumer & Food</option>
                         <option value="retail">Retail</option>
                         <option value="technology">Technology</option>
                         <option value="other">Other</option>
@@ -197,8 +197,8 @@ function ContactPage() {
                         <option value="profitability">Profitabilityy</option>
                         <option value="gtm">Go-to-Market</option>
                         <option value="revenue-management">Revenue Management</option>
-                        <option value="general-business-challenge">General Business Challenge</option>
                         <option value="supply-chain">Supply Chain</option>
+                        <option value="general-business-challenge">General Business Challenge</option>
                         <option value="not-sure">Not sure yet</option>
                       </select>
                     </Field>
